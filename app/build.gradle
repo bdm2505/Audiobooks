@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'de.undercouch.download'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "ru.lytvest.audiobooks"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+ext {
+    libtorrentVersion = '1.2.14.2'
+}
+
+// Custom task which downloads the appropriate version of JAR files for jlibtorrent
+task downloadDependencies(type: Download) {
+    def baseUrl = "https://github.com/frostwire/frostwire-jlibtorrent" +
+            "/releases/download/release%2F$libtorrentVersion"
+
+    def platforms = ['arm', 'arm64', 'x86', 'x86_64']
+    def urls = platforms.collect { "$baseUrl/jlibtorrent-android-$it-${libtorrentVersion}.jar" }
+    urls.add("$baseUrl/jlibtorrent-${libtorrentVersion}.jar")
+
+    src urls
+    dest 'libs'
+    overwrite false
+}
+
+preBuild.dependsOn(downloadDependencies)
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+
+
+    api fileTree(dir: 'libs', include: ['*.jar'])
+}
