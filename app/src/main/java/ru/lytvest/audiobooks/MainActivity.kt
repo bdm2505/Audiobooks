@@ -1,6 +1,7 @@
 package ru.lytvest.audiobooks
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = RVAdapter(this)
 
+
     }
 
 }
@@ -36,7 +38,7 @@ class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewH
     val listItem = listOf(
         Book("Дорога в маги", "Валери я вв", "https://cm.author.today/content/2021/11/15/8fe8ef9b8f75424da72b3a90eef95a96.jpg?width=265&height=400&mode=max", "Жил жлв был герой такой оолы ыооо в ..."),
         Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 3", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
+        Book("Дорога в маги 3", "Валери я вв", "https://cm.author.today/content/2021/10/31/aeb20838d57444ca97ffde2af9856d98.jpg?width=265&height=400&mode=max", "Жил жлв был герой такой оолы ыооо в ..."),
         Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
         Book("Дорога в маги", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
         Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
@@ -52,7 +54,7 @@ class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewH
         Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
     )
 
-    class BookViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class BookViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val name = view.findViewById<TextView>(R.id.book_name)
         val author = view.findViewById<TextView>(R.id.book_author)
         val description = view.findViewById<TextView>(R.id.book_description)
@@ -74,6 +76,11 @@ class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewH
             .placeholder(R.drawable.load)
             .error(R.drawable.ic_launcher_background)
             .into(holder.image)
+
+        holder.view.setOnClickListener{
+            val intent = Intent(context, BookActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
