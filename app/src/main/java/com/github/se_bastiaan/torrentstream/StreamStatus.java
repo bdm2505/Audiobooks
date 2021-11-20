@@ -28,4 +28,14 @@ public class StreamStatus {
         this.seeds = seeds;
         this.downloadSpeed = downloadSpeed;
     }
+
+    @Override
+    public String toString() {
+        return "StreamStatus{" +
+                "progress=" + progress +
+                ", bufferProgress=" + bufferProgress +
+                ", seeds=" + seeds +
+                ", downloadSpeed=" + downloadSpeed +
+                '}';
+    }
 }

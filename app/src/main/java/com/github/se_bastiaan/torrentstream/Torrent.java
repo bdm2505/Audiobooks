@@ -16,6 +16,8 @@
 
 package com.github.se_bastiaan.torrentstream;
 
+import androidx.annotation.NonNull;
+
 import com.frostwire.jlibtorrent.AlertListener;
 import com.frostwire.jlibtorrent.FileStorage;
 import com.frostwire.jlibtorrent.Priority;
@@ -66,6 +68,15 @@ public class Torrent implements AlertListener {
     private final TorrentHandle torrentHandle;
     private final TorrentListener listener;
     private final Long prepareSize;
+
+    @Override
+    public String toString() {
+        return "Torrent{" +
+                "prepareProgress=" + prepareProgress +
+                ", progressStep=" + progressStep +
+                ", state=" + state +
+                '}';
+    }
 
     /**
      * The constructor for a new Torrent

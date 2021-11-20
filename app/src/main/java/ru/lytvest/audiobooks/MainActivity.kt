@@ -14,7 +14,29 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.github.se_bastiaan.torrentstream.StreamStatus
+import com.github.se_bastiaan.torrentstream.Torrent
+import com.github.se_bastiaan.torrentstream.TorrentOptions
+import com.github.se_bastiaan.torrentstream.TorrentStream
+import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToJsonElement
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
+import java.lang.Exception
+import java.lang.StringBuilder
 
+
+
+@ExperimentalSerializationApi
+fun main(){
+    println(Json.decodeFromStream<List<Book>>(File("info.json").inputStream()))
+
+
+}
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,28 +53,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+//fun Context.readTxtFile(fileId: Int): String{
+//    val stream = BufferedReader(InputStreamReader(resources.openRawResource(fileId)))
+//    val sb = StringBuilder()
+//    stream.use {
+//        while (true){
+//            sb.append(it.readLine() ?: break)
+//        }
+//    }
+//    return sb.toString()
+//}
 
+@ExperimentalSerializationApi
 class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewHolder>() {
 
 
-    val listItem = listOf(
-        Book("Дорога в маги", "Глушановский Алексей", "http://lytvest.com.xsph.ru/wp-content/uploads/2021/11/doroga-v-magi-1.jpg", "Увлечение магией в нашем, не приспособленном для колдовства мире, может завести далеко. Очень далеко! Прямо таки в мир иной. Как в буквальном, так и в фигуральном смысле. Магия может помочь воскреснуть после нелепой гибели, познакомить с прекрасной богиней огня, дать в дар могучее тело демона. Но в этой жизни за все надо платить. И некоторые дары, несмотря на несомненную полезность, бывают отнюдь не безобидны. Увлечение магией в нашем, не приспособленном для колдовства мире, может завести далеко. Очень далеко! Прямо таки в мир иной. Как в буквальном, так и в фигуральном смысле. Магия может помочь воскреснуть после нелепой гибели, познакомить с прекрасной богиней огня, дать в дар могучее тело демона. Но в этой жизни за все надо платить. И некоторые дары, несмотря на несомненную полезность, бывают отнюдь не безобидны. Увлечение магией в нашем, не приспособленном для колдовства мире, может завести далеко. Очень далеко! Прямо таки в мир иной. Как в буквальном, так и в фигуральном смысле. Магия может помочь воскреснуть после нелепой гибели, познакомить с прекрасной богиней огня, дать в дар могучее тело демона. Но в этой жизни за все надо платить. И некоторые дары, несмотря на несомненную полезность, бывают отнюдь не безобидны. Увлечение магией в нашем, не приспособленном для колдовства мире, может завести далеко. Очень далеко! Прямо таки в мир иной. Как в буквальном, так и в фигуральном смысле. Магия может помочь воскреснуть после нелепой гибели, познакомить с прекрасной богиней огня, дать в дар могучее тело демона. Но в этой жизни за все надо платить. И некоторые дары, несмотря на несомненную полезность, бывают отнюдь не безобидны."),
-        Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 3", "Валери я вв", "https://cm.author.today/content/2021/10/31/aeb20838d57444ca97ffde2af9856d98.jpg?width=265&height=400&mode=max", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 3", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 3", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 2", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 3", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-        Book("Дорога в маги 4", "Валери я вв", "ссылка", "Жил жлв был герой такой оолы ыооо в ..."),
-    )
+    val listItem = Json.decodeFromStream<List<Book>>(context.resources.openRawResource(R.raw.info))
 
     class BookViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val name = view.findViewById<TextView>(R.id.book_name)
@@ -68,8 +84,8 @@ class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewH
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book = listItem[position]
-        holder.name.text = book.name
-        holder.author.text = book.author
+        holder.name.text = book.firstLine
+        holder.author.text = "${book.author}\n${book.reader}"
         holder.description.text = book.description
         Glide.with(context)
             .load(book.image)
