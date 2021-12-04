@@ -3,6 +3,8 @@ package ru.lytvest.audiobooks
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Debug
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import ru.lytvest.audiobooks.torrent.TorrentDownload
 import java.io.File
 
 
@@ -32,6 +39,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Debug.stopMethodTracing()
+
+//        val io = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+//        io.launch {
+//            TorrentDownload().startDownloading(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath + "/file.torrent")
+//        }
         val rv = findViewById<RecyclerView>(R.id.rv)
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = RVAdapter(this)
