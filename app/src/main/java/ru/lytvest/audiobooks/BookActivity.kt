@@ -13,30 +13,26 @@ class BookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book)
+        val book = savedInstanceState?.getParcelable<Book>("book") ?: return
 
-        findViewById<Button>(R.id.listen_button).setOnClickListener{
+        findViewById<Button>(R.id.listen_button).setOnClickListener {
             val intent = Intent(this, DownloadActivity::class.java)
+            intent.putExtra("book", book)
             startActivity(intent)
         }
 
-        book?.let {
-            val name = findViewById<TextView>(R.id.name_book)
-            name.text = it.name
-            findViewById<TextView>(R.id.author_book).text = it.author
-            findViewById<TextView>(R.id.description_book).text = it.description
-            Glide.with(this)
-                .load(it.image)
-                .placeholder(R.drawable.load)
-                .error(R.drawable.ic_launcher_background)
-                .into(findViewById(R.id.image_book))
-        } ?: run {
-            finish()
-        }
+
+
+        val name = findViewById<TextView>(R.id.name_book)
+        name.text = book.name
+        findViewById<TextView>(R.id.author_book).text = book.author
+        findViewById<TextView>(R.id.description_book).text = book.description
+        Glide.with(this)
+            .load(book.image)
+            .placeholder(R.drawable.load)
+            .error(R.drawable.ic_launcher_background)
+            .into(findViewById(R.id.image_book))
+
     }
 
-
-
-    companion object {
-        var book: Book? = null
-    }
 }

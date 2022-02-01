@@ -55,38 +55,38 @@ class DownloadActivity : AppCompatActivity() {
         audioDownloadBar = findViewById(R.id.audioDownloadBar)
         val percentView = findViewById<TextView>(R.id.percent)
         val speedView = findViewById<TextView>(R.id.speed)
+        val book = savedInstanceState?.getParcelable<Book>("book") ?: return
 
-        BookActivity.book?.let {
-            val me = this
-            Log.d(T, "check book $it")
-            val listener = object : TorrentDownloadDListener() {
-                override fun updatePercents(percents: List<Double>) {
-                    main.launch {
-                        me.files = files
-                        me.percents = percents
-                        if (percents.size > currIndex) {
-                            audioDownloadBar.setProgress((percents[currIndex] * 100).toInt(), true)
-                        }
-                        startAudio()
-                    }
-                }
 
-                override fun percentChanged() {
-                    main.launch {
-                        percentView.text = percentToString()
-                        speedView.text = downloadRateToString()
+        val me = this
+        Log.d(T, "check book $book")
+        val listener = object : TorrentDownloadDListener() {
+            override fun updatePercents(percents: List<Double>) {
+                main.launch {
+                    me.files = files
+                    me.percents = percents
+                    if (percents.size > currIndex) {
+                        audioDownloadBar.setProgress((percents[currIndex] * 100).toInt(), true)
                     }
+                    startAudio()
                 }
             }
-            Log.d(T, "launch load and unzip")
-            io.launch {
-                val file = loadAndUnzipFile(
-                    it.torrent,
-                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: return@launch
-                )
-                Log.d(T, "file unzipped $file")
-                TorrentDownload(file ?: return@launch, listener, io)
+
+            override fun percentChanged() {
+                main.launch {
+                    percentView.text = percentToString()
+                    speedView.text = downloadRateToString()
+                }
             }
+        }
+        Log.d(T, "launch load and unzip")
+        io.launch {
+            val file = loadAndUnzipFile(
+                book.torrent,
+                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: return@launch
+            )
+            Log.d(T, "file unzipped $file")
+            TorrentDownload(file ?: return@launch, listener, io)
         }
 
         previousOneButton = findViewById(R.id.previous_one)
@@ -96,7 +96,7 @@ class DownloadActivity : AppCompatActivity() {
         nextTwoButton = findViewById(R.id.next_two)
 
         previousTwoButton.setOnClickListener {
-            if(currIndex > 0){
+            if (currIndex > 0) {
                 currIndex -= 1
                 stopAudio()
                 startAudio()
@@ -111,17 +111,17 @@ class DownloadActivity : AppCompatActivity() {
             audioBarSetCurrentPosition()
         }
         nextTwoButton.setOnClickListener {
-            if(currIndex < files.size - 1){
+            if (currIndex < files.size - 1) {
                 currIndex += 1
                 stopAudio()
                 startAudio()
             }
         }
         playButton.setOnClickListener {
-            if(buttonPlayPressed){
+            if (buttonPlayPressed) {
                 playButton.setImageResource(R.drawable.play)
                 stopAudio()
-            } else{
+            } else {
                 playButton.setImageResource(R.drawable.pause)
                 startAudio()
             }
@@ -148,17 +148,18 @@ class DownloadActivity : AppCompatActivity() {
         })
 
         Glide.with(this)
-            .load(BookActivity.book?.image ?: "no image")
+            .load(book.image ?: "no image")
             .placeholder(R.drawable.load)
             .error(R.drawable.ic_launcher_background)
             .into(findViewById(R.id.image))
     }
-    fun stopAudio(){
+
+    fun stopAudio() {
         audio.pause()
         audioPlay = false
-        if (currPlayingIndex != currIndex){
+        if (currPlayingIndex != currIndex) {
             audio.stop()
-            if (percents.size > currIndex){
+            if (percents.size > currIndex) {
                 audioDownloadBar.setProgress((percents[currIndex] * 100).toInt(), true)
             }
         }
@@ -179,14 +180,14 @@ class DownloadActivity : AppCompatActivity() {
                 audioPlay = true
                 runTimerUpdater()
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
 
-    fun runTimerUpdater(){
-        if(timerUpdater == null) {
+    fun runTimerUpdater() {
+        if (timerUpdater == null) {
             timerUpdater = io.launch {
                 while (true) {
                     audioBarSetCurrentPosition()

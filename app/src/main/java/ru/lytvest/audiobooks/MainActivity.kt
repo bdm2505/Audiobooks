@@ -1,16 +1,26 @@
 package ru.lytvest.audiobooks
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.MediaMetadata
+import android.media.session.MediaSession
+import android.os.Build
 import android.os.Bundle
-import android.os.Debug
-import android.os.Environment
+
+import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -35,6 +45,7 @@ fun main(){
 class MainActivity : AppCompatActivity() {
 
 
+    val CHANNEL_ID = "open-channel"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +56,73 @@ class MainActivity : AppCompatActivity() {
 //        io.launch {
 //            TorrentDownload().startDownloading(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath + "/file.torrent")
 //        }
-        val rv = findViewById<RecyclerView>(R.id.rv)
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = RVAdapter(this)
+//        val rv = findViewById<RecyclerView>(R.id.rv)
+//        rv.layoutManager = LinearLayoutManager(this)
+//        rv.adapter = RVAdapter(this)
+
+        val mediaSession = MediaSession(this, "MainActivity")
+        mediaSession.setMetadata(
+            MediaMetadata.Builder()
+                .putString(MediaMetadata.METADATA_KEY_TITLE, "currentTrack.title")
+
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, "currentTrack.artist")
+
+                .putString(
+                    MediaMetadata.METADATA_KEY_ALBUM_ART_URI, "currentTrack.albumArtUri")
+
+                .putLong(MediaMetadata.METADATA_KEY_DURATION, 10000) // 4
+
+                .build()
+        )
+
+        val mediaStyle = Notification.MediaStyle().setMediaSession(mediaSession.sessionToken)
+        val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val n = Notification.Builder(this, CHANNEL_ID)
+                .setStyle(mediaStyle)
+                .setSmallIcon(R.drawable.play)
+                .setContentTitle("title")
+                .setAutoCancel(true)
+                .setSubText("sub text")
+                .setContentText("context text")
+
+
+
+            val pauseAction: Notification.Action = Notification.Action.Builder(
+                R.drawable.pause, "Pause", PendingIntent.getActivity(this,0, Intent(this, MainActivity::class.java), 0)
+            ).build()
+
+            n.addAction(pauseAction)
+            n.build()
+
+        } else {
+            NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("title")
+                .setContentText("Content")
+                .setSmallIcon(R.drawable.play)
+                .build()
+        }
+
+
+
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, "default channel", importance).apply {
+                description = "descriptionText"
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        Log.d(this.javaClass.simpleName, "start notification")
+
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(123, notification)
+        }
 
 
     }
@@ -95,7 +170,7 @@ class RVAdapter(val context: Context) : RecyclerView.Adapter<RVAdapter.BookViewH
 
         holder.view.setOnClickListener{
             val intent = Intent(context, BookActivity::class.java)
-            BookActivity.book = book
+            intent.putExtra("book", book)
             context.startActivity(intent)
         }
     }
